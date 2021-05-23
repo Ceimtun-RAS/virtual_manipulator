@@ -170,6 +170,10 @@ axis color
 * G -> y, pitch 
 * B -> z, yaw
 
+## Items position
+
+__Base_link__ : [-0.13, -0.1, 0.6]
+
 [ROS service MATLAB](https://www.mathworks.com/help/ros/ref/rosservice.html)
 
 
