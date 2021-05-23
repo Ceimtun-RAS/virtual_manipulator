@@ -1,4 +1,4 @@
-function MWRoboCupChallenge_setInitialConfig
+function setInitialConfig
 % Copyright 2021 MathWorks, Inc
 %
 % DO NOT MODIFY !

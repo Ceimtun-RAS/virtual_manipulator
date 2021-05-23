@@ -1,4 +1,4 @@
-function [q,qd,qdd,trajTimes] = MWRoboCupChallenge_computeTrajectory(currentRobotJConfig, taskFinal, robot, endEffector, trajDuration)
+function [q,qd,qdd,trajTimes] = computeTrajectory(currentRobotJConfig, taskFinal, robot, endEffector, trajDuration)
 % Copyright 2021 MathWorks, Inc
 %
 % This function use features available in the Robotics System Toolbox to

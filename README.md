@@ -166,9 +166,9 @@ intrinsic rotation
 * ROS message: packet of information
 
 axis color 
-R -> x, roll
-G -> y, pitch 
-B -> z, yaw
+* R -> x, roll
+* G -> y, pitch 
+* B -> z, yaw
 
 [ROS service MATLAB](https://www.mathworks.com/help/ros/ref/rosservice.html)
 
