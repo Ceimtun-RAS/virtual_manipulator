@@ -1,27 +1,51 @@
-function [q,qd,qdd,trajTimes] = compute_trajectory(current_joints_Config, final_pose, robot, endEffector, traj_duration)
-        timestep = 0.1;
+function [q,qd,qdd,traj_times] = compute_trajectory(current_joints_Config, final_pose, robot, endEffector, traj_duration)
+        time_step = 0.1;
+        ws_height = 0.1;
         ik = inverseKinematics('RigidBodyTree',robot);
         ik.SolverParameters.AllowRandomRestart = false;
         weights = [1 1 1 1 1 1];
 
         %Initial task config
-        jointInit = wrapToPi(current_joints_Config');
+        joint_init = wrapToPi(current_joints_Config');
         % Initial end-effector pose
-        taskInit = getTransform(robot, jointInit, endEffector);
+        T0 = getTransform(robot, joint_init, endEffector);
+        q0 = tform2trvec(T0);
+        qF = tform2trvec(final_pose);
 
         % Time intervals
-        timeInterval = [0;traj_duration];
-        trajTimes = timeInterval(1):timestep:timeInterval(end);
+        traj_times = 0:time_step:traj_duration;
+        tpts = [0 traj_duration/8 traj_duration/2 7*traj_duration/8 traj_duration];
 
         % Retrieve task configurations between initial and final
-        [s,sd,sdd] = trapveltraj(timeInterval',numel(trajTimes)); % [q,qd,qdd,tSamples,pp] = trapveltraj(wayPoints,numSamples)
-        [T, ~, ~] = transformtraj(taskInit,final_pose,timeInterval,trajTimes, 'TimeScaling',[s;sd;sdd]/timeInterval(end));
-
+        wpts = zeros(3,5);
+        wpts(:,1) = q0';
+        wpts(:,2) = q0';
+        if q0(3) < ws_height
+            wpts(3,2) = ws_height;
+        end
+        wpts(:,3) = (qF+q0)/2;
+        wpts(3,3) = 2*ws_height;
+        wpts(:,4) = qF;
+        if qF(3) < ws_height
+            wpts(3,4) = ws_height;
+        end
+        wpts(:,5) = qF;        
+        
+        [q,~,~,~] = cubicpolytraj(wpts,tpts,traj_times);
+        % [q,qd,qdd,pp] = cubicpolytraj(wayPoints,timePoints,tSamples)
+        ang0 = tform2eul(T0,'XYZ');
+        angF = tform2eul(final_pose,'XYZ');
+        ang = wrapToPi([ang0;angF]);
+        t_ang = [0 traj_duration];
+        R = wrapToPi(interp1(t_ang,ang(:,1),traj_times));
+        P = wrapToPi(interp1(t_ang,ang(:,2),traj_times));
+        Y = wrapToPi(interp1(t_ang,ang(:,3),traj_times));
         % Compute corresponding joint configurations
-        robotPos = zeros(size(T,3),numel(jointInit));
-        initialGuess = wrapToPi(jointInit);
-        for i=1:size(T,3)            
-            robotPos(i,:) = ik(endEffector,T(:,:,i),weights,initialGuess);
+        robotPos = zeros(length(traj_times),numel(joint_init));
+        initialGuess = wrapToPi(joint_init);
+        for i=1:length(traj_times)
+            T = trvec2tform(q(:,i)')*eul2tform([R(i) P(i) Y(i)],'XYZ');
+            robotPos(i,:) = ik(endEffector,T,weights,initialGuess);
             robotPos(i,:) = wrapToPi(robotPos(i,:));
             initialGuess = robotPos(i,:);            
         end   
@@ -30,13 +54,13 @@ function [q,qd,qdd,trajTimes] = compute_trajectory(current_joints_Config, final_
         % disp('Done planning trajectory, now sampling...')
 
         % Interpolated joint velocities
-        h = timestep;
+        h = time_step;
         robotVelTemp = diff(robotPos)/h;
-        robotVel= [zeros(1,numel(jointInit));robotVelTemp];
+        robotVel= [zeros(1,numel(joint_init));robotVelTemp];
 
         % Interpolated joint accelerations
         robotAccTemp = diff(robotVelTemp)/h;
-        robotAcc = [zeros(2,numel(jointInit));robotAccTemp];
+        robotAcc = [zeros(2,numel(joint_init));robotAccTemp];
 
         q = robotPos';
         qd = robotVel';

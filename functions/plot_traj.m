@@ -5,7 +5,7 @@ function plot_traj(q, robot, end_effector)
         grip_position(k,:) = tform2trvec(getTransform(robot, q(:,k)', end_effector));
     end
 
-    figure(1);
+    figure();
     show(robot);
     xlim('auto')
     ylim('auto')

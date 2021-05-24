@@ -24,7 +24,7 @@ joint_state_actual = receive(joint_state_sub,2);
 joint_position =  joint_state_actual.Position(2:8);
 moving_time = 2;
 
-[q,qd,qdd,trajTimes] = computeTrajectory( joint_position, MTH_goal, robot, 'gripper', moving_time);                      
+[q,qd,qdd,trajTimes] = compute_trajectory( joint_position, MTH_goal, robot, 'gripper', moving_time);                      
 trajGoalMsg = packageJointTrajectory(trajGoalMsg,q,qd,qdd,trajTimes);
 
 waitForServer(trajAct);
