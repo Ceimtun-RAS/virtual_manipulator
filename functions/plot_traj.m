@@ -7,9 +7,9 @@ function plot_traj(q, robot, end_effector)
 
     figure();
     show(robot);
-    xlim('auto')
-    ylim('auto')
-    zlim('auto')
+    xlim([-0.5 0.5])%xlim('auto')
+    ylim([-0.5 0.5])%ylim('auto')
+    zlim([-0.2 1])%zlim('auto')
     camva('auto');
 
     hold on

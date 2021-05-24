@@ -33,9 +33,9 @@ joint_position =  current_joint_pos.Position(2:8);
 
 % Move robot
 traj_goal = packageJointTrajectory(traj_goal,q,qd,qdd,trajTimes);
-q=q';
+
 
 waitForServer(traj_client);
 sendGoal(traj_client, traj_goal);
 %% Plot trajectory
-plot_traj(q', robot, 'gripper')
+plot_traj(q, robot, 'gripper')

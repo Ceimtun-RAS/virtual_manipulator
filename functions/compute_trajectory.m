@@ -14,8 +14,7 @@ function [q,qd,qdd,traj_times] = compute_trajectory(current_joints_Config, final
 
         % Time intervals
         traj_times = 0:time_step:traj_duration;
-        tpts = [0 traj_duration/8 traj_duration/2 7*traj_duration/8 traj_duration];
-
+        
         % Retrieve task configurations between initial and final
         wpts = zeros(3,5);
         wpts(:,1) = q0';
@@ -29,7 +28,9 @@ function [q,qd,qdd,traj_times] = compute_trajectory(current_joints_Config, final
         if qF(3) < ws_height
             wpts(3,4) = ws_height;
         end
-        wpts(:,5) = qF;        
+        wpts(:,5) = qF;   
+        tpts = [0 traj_duration/8 traj_duration/2 7*traj_duration/8 traj_duration];
+
         
         [q,~,~,~] = cubicpolytraj(wpts,tpts,traj_times);
         % [q,qd,qdd,pp] = cubicpolytraj(wayPoints,timePoints,tSamples)

@@ -170,9 +170,28 @@ axis color
 * G -> y, pitch 
 * B -> z, yaw
 
-## Items position
+## Main items position
 
 __Base_link__ : [-0.13, -0.1, 0.6]
+
+![Objects in grey zone](images/fixed_objects.png)
+
+1. Red can <br/>
+    [0.5925 0.4031 0.5548] [-1.5707 0.0981 -2.3273] 
+
+2. Red can vertical <br/>
+    [0.2140 0.4408 0.5854] [3.1301 -0.0084 -3.0172] 
+
+3. Red bottle <br/>
+    [0.2214 0.5998 0.5559] [1.5708 -0.4342 1.5320]
+
+4. Yellow bottle <br/>
+    [-0.1430 0.5261 0.5557] [1.5592 1.4658 1.5682]
+
+5. Green can <br/>
+    [-0.1065 0.6329 0.6743] [0.0009 -0.0135 1.3401]
+
+
 
 [ROS service MATLAB](https://www.mathworks.com/help/ros/ref/rosservice.html)
 
