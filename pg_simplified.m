@@ -1,6 +1,6 @@
 clc, clear, close all
 %% Connect to ROS Network
-ros_ip = '192.168.0.2';
+ros_ip = fileread("ROS_ip.txt");
 rosshutdown;
 
 rosinit(ros_ip,11311);

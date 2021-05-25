@@ -1,7 +1,7 @@
 clc, clear, close all
 %% Connect to ROS Network
 %ipaddress = '192.168.182.128'; % VM
-ipaddress = '192.168.0.2';
+ipaddress = fileread("ROS_ip.txt");
 rosshutdown;
 
 rosinit(ipaddress,11311);

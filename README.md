@@ -11,6 +11,11 @@
 * [Get started with gazebo](https://www.mathworks.com/help/ros/ug/get-started-with-gazebo-and-a-simulated-turtlebot.html)
 * [Blog](https://jsduenass.github.io/posts/matlab/)
 
+## Objective
+Crate an algorithm for the robotic arm so it can sort properly the cans and bottles. 
+* Cans must go into the green bin
+* Bottles must go into the blue bin 
+
 ## About the system
 The work is based on the vmware virtual machine provided by the github getting started. It contains: 
 * ROS 2 Dashing desktop installation
