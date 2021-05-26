@@ -30,68 +30,61 @@ physicsClient = rossvcclient('gazebo/unpause_physics');
 call(physicsClient,'Timeout',3);
 
 %% Configure ROS subscriber 
-jointSub = rossubscriber('/my_gen3/joint_states');
+joint_sub = rossubscriber('/my_gen3/joint_states');
 ros_action = '/my_gen3/gen3_joint_trajectory_controller/follow_joint_trajectory';
-[trajAct,trajGoalMsg] = rosactionclient(ros_action);
-% [client,goalMsg] = rosactionclient( actionName)
-showdetails(trajGoal)
-%% Define position 
-base_pos=[-0.13, -0.1, 0.6];
-bottle_pos=[0.26 -0.27 0.54];% Botella facil
+[traj_client,traj_goal] = rosactionclient(ros_action);      % [client,goalMsg] = rosactionclient( actionName)
+%showdetails(trajGoal)
 
-
-translation=bottle_pos-base_pos; 
-
-orientation=[pi 0 pi/2];
-H_transform=trvec2tform(translation)*eul2tform(orientation,'XYZ')  
-
-jointMsg = receive(jointSub,2);
-jointPosition =  jointMsg.Position(2:8);
-
-jointMsg.Name;
-
-[q,qd,qdd,trajTimes] = computeTrajectory( jointPosition, H_transform, robot, 'gripper', 4);                      
-%[q,qd,qdd,trajTimes] = computeTrajectory(...
-%                         currentRobotJConfig, taskFinal, robot, endEffector, trajDuration)
-
-
-N=length(trajTimes);
-
-dq=[0;0;0;0;-2;0;0];              % movimiento relativo relativa
-% qdd=0*qdd;
-% qd=dq*ones(1,N);
-
-q2=interp1([jointPosition,jointPosition+dq]',linspace(1,2,N),'linear');
-q2=wrapToPi(q2)';
-
-% Send position message
-trajGoal = packageJointTrajectory(trajGoal,q,qd,qdd,trajTimes);
-
-waitForServer(trajAct);
-sendGoal(trajAct,trajGoal)
-%waitForServer(trajAct);
-%SLActivateGripper("close")
-
-%drop_item("green")
-
-%% Plot trajectory
+rgbImgSub = rossubscriber('/camera/color/image_raw');     % camera sensor
+rgbDptSub = rossubscriber('/camera/depth/image_raw');     % depth sensor
+%%
 close all
-h=plot(trajTimes,(q2-jointPosition));
-hold on
-for k=1:7
-  yline(jointPosition(k),"--","Color",h(k).Color)
-end
-legend(jointMsg.Name(2:8))
-title("Joint Position  [rad]")
-hold off
-% 
-% plot(qd')
-% title("Joint Velocity  [rad/s}")
-% 
-% subplot(2,2,4)
-% plot(qdd')
-% title("Joint acceleration  [rad/s^2}")
 
+trajTimes=1;
+
+q_home=[-1.9494;-0.0347;-1.1961;-1.0551;0.0367; -2.0500; 1.5847];
+%q_home=[0;0.5;0;0.9;0;1.6;0];
+qd=zeros(7,1);
+qdd=zeros(7,1);
+
+traj_goal = packageJointTrajectory(traj_goal,q_home,qd,qdd,trajTimes);
+waitForServer(traj_client);
+sendGoalAndWait(traj_client, traj_goal);
+curImage = receive(rgbImgSub);
+rgbImg = readImage(rgbImgSub.LatestMessage);
+imshow(rgbImg)
+%imwrite(rgbImg,'data/img_home.png')
+
+%% sweep 
+disp("sweep")
+q_vel=[0.0;0;0;0;0;0;0];     % joint velocities  
+qd=zeros(7,1);
+qdd=zeros(7,1);
+q=pi/180*[-90;-20;0;-65;0; 0; 0]; % sweep starting postion
+traj_goal = packageJointTrajectory(traj_goal,q,qd,qdd,trajTimes);
+waitForServer(traj_client);
+sendGoalAndWait(traj_client, traj_goal);
+%%
+dt=1;
+
+for k=1:5
+
+joint_pos_reciver = receive(joint_sub,2); %Get current position in maximum 2 seconds
+q=joint_pos_reciver.Position(2:8);
+
+q=q+q_vel*dt;
+
+qd=q_vel;
+qdd=zeros(7,1);
+
+traj_goal = packageJointTrajectory(traj_goal,q,qd,qdd,trajTimes);
+waitForServer(traj_client);
+sendGoalAndWait(traj_client, traj_goal);
+curImage = receive(rgbImgSub);
+rgbImg = readImage(rgbImgSub.LatestMessage);
+imshow(rgbImg)
+pause(1);
+end
 %% Send position message 
 % trajGoal = packageJointTrajectory(trajGoal,q,qd,qdd,trajTimes);
 % 

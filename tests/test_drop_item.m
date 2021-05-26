@@ -20,15 +20,19 @@ rgbDptSub = rossubscriber('/camera/depth/image_raw');     % depth sensor
 
 %% Define position bottle
 run trajectory.m
+clear data_log
 data_log.translation=[];
 data_log.orientation=[];
 data_log.bin=[];
 data_log.img=[];
 data_log.depth=[];
 
+base_pos=[-0.13, -0.1, 0.6];
+offset=[0,0,0.2];
+
 for k=1:size(v_translation,1)
   
-  translation = v_translation(k,:); 
+  translation = v_translation(k,:)-base_pos+offset; 
   orientation=v_orientation(k,:);
   bin=v_bin(k);
   
@@ -38,7 +42,7 @@ for k=1:size(v_translation,1)
   joint_position =  joint_state_actual.Position(2:8);
   moving_time = 2;
 
-  [q,qd,qdd,trajTimes] = compute_trajectory( joint_position, MTH_goal, robot, 'gripper', moving_time);                      
+  [q,qd,qdd,trajTimes] = computeTrajectory( joint_position, MTH_goal, robot, 'gripper', moving_time);                      
   trajGoalMsg = packageJointTrajectory(trajGoalMsg,q,qd,qdd,trajTimes);
 
   waitForServer(trajAct);
@@ -50,7 +54,8 @@ for k=1:size(v_translation,1)
   rgbImg = readImage(rgbImgSub.LatestMessage);
   curDepth = receive(rgbDptSub);
   depthImg = readImage(rgbDptSub.LatestMessage); 
-
+  img_path="../data/image"+k+".png"
+  imwrite(rgbImg,img_path);
   
   data_log(k).translation=translation;
   data_log(k).orientation=orientation;
@@ -59,13 +64,30 @@ for k=1:size(v_translation,1)
   data_log(k).depth=depthImg;
   
   %Send to bin
-  drop_item(bin,robot);
+  %drop_item(bin,robot);
 
 end 
 
-save ../data/sensor_data.mat data_log
+%save ../data/sensor_data.mat data_log
+%% 
+% close all
+% load ../data/sensor_data.mat
+% imshow(data_log(1).img)
+% figure()
+% 
+% imshow(data_log(1).depth)
 %%
-imshow(data_log(1).img)
-figure()
-imshow(data_log(1).depth)
-  
+% close all
+% %images=zeros(size(data_log(1).img));
+% 
+% images=[]
+% depth=[];
+% for k=1:size(data_log,2)
+%   images(:,:,:,k)=data_log(k).img;
+%   depth(:,:,k)=data_log(k).depth;
+% end
+% 
+% 
+% implay(images,1)
+% %implay(depth,1)
+
