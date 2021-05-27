@@ -16,7 +16,14 @@ Crate an algorithm for the robotic arm so it can sort properly the cans and bott
 * Cans must go into the green bin
 * Bottles must go into the blue bin 
 
-## About the system
+## Config of this project
+* A submodule is used the repository [vision_](https://github.com/mora200217/vision_) if you want to clone this repository use the command ```git clone --recurse-submodules https://github.com/jsduenass/virtual_manipulator```
+* add the folders ```data``` and ```functions``` to the matlab path.
+* if you need to change the ROS ip address run the following command so git ignores the changes```git update-index --skip-worktree data/ROS_ip.txt```
+
+
+## About the virtual machine
+
 The work is based on the vmware virtual machine provided by the github getting started. It contains: 
 * ROS 2 Dashing desktop installation
 * ROS Melodic desktop installation
@@ -35,7 +42,6 @@ gazebo -v
 The project uses ros_kortex  robotic arm for the virtual manipulator  
 
 
-## Config
 There are different platforms where to run vmware workstation player and virtual box. The tutorial recommends using the vmware route and issues where found while using virtual box
 
 ### vmware 
