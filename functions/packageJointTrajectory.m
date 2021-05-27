@@ -18,7 +18,7 @@ function msg = packageJointTrajectory(msg,q,qd,qdd,trajTimes)
     for idx = 1:numJoints
         msg.GoalTolerance(idx) = rosmessage('control_msgs/JointTolerance');
         msg.GoalTolerance(idx).Name = jointNames{idx};
-        msg.GoalTolerance(idx).Position = 0;
+        msg.GoalTolerance(idx).Position = 0.3;
         msg.GoalTolerance(idx).Velocity = 0.1;
         msg.GoalTolerance(idx).Acceleration = 0.1;
     end

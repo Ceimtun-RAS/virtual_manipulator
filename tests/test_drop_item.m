@@ -28,44 +28,45 @@ data_log.img=[];
 data_log.depth=[];
 
 base_pos=[-0.13, -0.1, 0.6];
-offset=[0,0,0.2];
+offset=[0,0,0];
 
 for k=1:size(v_translation,1)
-  
+  disp("Step")
   translation = v_translation(k,:)-base_pos+offset; 
   orientation=v_orientation(k,:);
   bin=v_bin(k);
   
   MTH_goal = trvec2tform(translation)*eul2tform(orientation,'XYZ');
 
-  joint_state_actual = receive(joint_state_sub,2);
+  joint_state_actual = receive(joint_state_sub);
   joint_position =  joint_state_actual.Position(2:8);
-  moving_time = 2;
+  moving_time = 1;
 
   [q,qd,qdd,trajTimes] = computeTrajectory( joint_position, MTH_goal, robot, 'gripper', moving_time);                      
   trajGoalMsg = packageJointTrajectory(trajGoalMsg,q,qd,qdd,trajTimes);
 
   waitForServer(trajAct);
   sendGoalAndWait(trajAct,trajGoalMsg);
-  SLActivateGripper("close");
-  
-  % Retrieve sensor data_log
-  curImage = receive(rgbImgSub);
-  rgbImg = readImage(rgbImgSub.LatestMessage);
-  curDepth = receive(rgbDptSub);
-  depthImg = readImage(rgbDptSub.LatestMessage); 
-  img_path="../data/image"+k+".png"
-  imwrite(rgbImg,img_path);
-  
-  data_log(k).translation=translation;
-  data_log(k).orientation=orientation;
-  data_log(k).bin=bin;
-  data_log(k).img=rgbImg;
-  data_log(k).depth=depthImg;
-  
-  %Send to bin
-  %drop_item(bin,robot);
+  if(mod(k,2)==0)
+    SLActivateGripper("close");
 
+    % Retrieve sensor data_log
+    curImage = receive(rgbImgSub);
+    rgbImg = readImage(rgbImgSub.LatestMessage);
+    curDepth = receive(rgbDptSub);
+    depthImg = readImage(rgbDptSub.LatestMessage); 
+    img_path="../data/image"+k+".png"
+    imwrite(rgbImg,img_path);
+
+%     data_log(k).translation=translation;
+%     data_log(k).orientation=orientation;
+%     data_log(k).bin=bin;
+%     data_log(k).img=rgbImg;
+%     data_log(k).depth=depthImg;
+
+    %Send to bin
+    drop_item(bin,robot);
+  end
 end 
 
 %save ../data/sensor_data.mat data_log
@@ -91,3 +92,17 @@ end
 % implay(images,1)
 % %implay(depth,1)
 
+
+trajTimes=1;
+
+q_home=[-1.9494;-0.0347;-1.1961;-1.0551;0.0367; -2.0500; 1.5847];
+%q_home=[0;0.5;0;0.9;0;1.6;0];
+qd=zeros(7,1);
+qdd=zeros(7,1);
+
+trajGoalMsg = packageJointTrajectory(trajGoalMsg,q_home,qd,qdd,trajTimes);
+waitForServer(trajAct);
+sendGoalAndWait(trajAct, trajGoalMsg);
+curImage = receive(rgbImgSub);
+rgbImg = readImage(rgbImgSub.LatestMessage);
+imshow(rgbImg)

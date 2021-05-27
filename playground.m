@@ -40,35 +40,22 @@ rgbDptSub = rossubscriber('/camera/depth/image_raw');     % depth sensor
 %%
 close all
 
-trajTimes=1;
-
-q_home=[-1.9494;-0.0347;-1.1961;-1.0551;0.0367; -2.0500; 1.5847];
-%q_home=[0;0.5;0;0.9;0;1.6;0];
-qd=zeros(7,1);
-qdd=zeros(7,1);
-
-traj_goal = packageJointTrajectory(traj_goal,q_home,qd,qdd,trajTimes);
-waitForServer(traj_client);
-sendGoalAndWait(traj_client, traj_goal);
-curImage = receive(rgbImgSub);
-rgbImg = readImage(rgbImgSub.LatestMessage);
-imshow(rgbImg)
 %imwrite(rgbImg,'data/img_home.png')
 
 %% sweep 
 disp("sweep")
-q_vel=[0.0;0;0;0;0;0;0];     % joint velocities  
 qd=zeros(7,1);
 qdd=zeros(7,1);
-q=pi/180*[-90;-20;0;-65;0; 0; 0]; % sweep starting postion
+q=pi/180*[-90;-20;0;-65;0; -95; 0]; % sweep starting postion
 traj_goal = packageJointTrajectory(traj_goal,q,qd,qdd,trajTimes);
 waitForServer(traj_client);
 sendGoalAndWait(traj_client, traj_goal);
 %%
-dt=1;
+dt=0.1;
+q_vel=[-1;0;0;0;0;0;0];     % joint velocities  
 
 for k=1:5
-
+disp("pass")
 joint_pos_reciver = receive(joint_sub,2); %Get current position in maximum 2 seconds
 q=joint_pos_reciver.Position(2:8);
 
