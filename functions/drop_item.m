@@ -56,9 +56,9 @@ function drop_item(translation,orientation, bin_name, robot)
     % go to bin
     h=upper_trans(3);
     if bin_name == "blue"
-        bin_pos = [-0.35 -0.4 h];
+        bin_pos = [-0.3 -0.45 h];
     elseif bin_name == "green"
-        bin_pos = [-0.35 0.4 h];
+        bin_pos = [-0.3 0.45 h];
     end
     
     H_transform = trvec2tform(bin_pos)*eul2tform(orientation,'XYZ');

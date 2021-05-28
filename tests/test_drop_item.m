@@ -28,10 +28,10 @@ data_log.img=[];
 data_log.depth=[];
 
 base_pos=[-0.13, -0.1, 0.6];
-offset=[0,0,0.04];
+offset=[0,0,0.025];
 N=size(v_translation,1);
-N=3;
-for k=4:6
+%N=3;
+for k=1:N
   disp("Step "+k+" of "+N)
   pause(3)
   translation = v_translation(k,:)-base_pos+offset; 
