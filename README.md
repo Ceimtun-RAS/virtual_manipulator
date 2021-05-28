@@ -11,6 +11,9 @@
 * [Get started with gazebo](https://www.mathworks.com/help/ros/ug/get-started-with-gazebo-and-a-simulated-turtlebot.html)
 * [Blog](https://jsduenass.github.io/posts/matlab/)
 
+### Other resources 
+* [Pick-and-Place Workflow in Gazebo Using Point-Cloud Processing and RRT Path Planning](https://www.mathworks.com/help/robotics/ug/pick-and-place-gazebo-with-point-clouds-and-rrt.html)
+
 ## Objective
 Crate an algorithm for the robotic arm so it can sort properly the cans and bottles. 
 * Cans must go into the green bin
@@ -187,21 +190,24 @@ __Base_link__ : [-0.13, -0.1, 0.6]
 
 ![Objects in grey zone](images/fixed_objects.png)
 
-1. Red can <br/>
-    [0.5925 0.4031 0.5548] [-1.5707 0.0981 -2.3273] 
 
-2. Red can vertical <br/>
-    [0.2140 0.4408 0.5854] [3.1301 -0.0084 -3.0172] 
+1. Blue bottle <br/>
+[-0.1592 -0.6765 0.6338] [0.00 -0.00 -0.0001]
 
-3. Red bottle <br/>
-    [0.2214 0.5998 0.5559] [1.5708 -0.4342 1.5320]
+2. Green can <br/>
+    [-0.1065 0.363 0.6743] [0.0009 -0.0135 1.3401]
+
+3. Blue bottle <br/>
+    [0.0735 0.2639 0.6338] [0.00 -0.00 0.003]
 
 4. Yellow bottle <br/>
     [-0.1430 0.5261 0.5557] [1.5592 1.4658 1.5682]
 
-5. Green can <br/>
-    [-0.1065 0.6329 0.6743] [0.0009 -0.0135 1.3401]
+5. Red can vertical <br/>
+    [0.2140 0.4408 0.5854] [3.1301 -0.0084 -3.0172] 
 
+6. Red bottle <br/>
+    [0.2214 0.5998 0.5559] [1.5708 -0.4342 1.5320]
 
 
 [ROS service MATLAB](https://www.mathworks.com/help/ros/ref/rosservice.html)
