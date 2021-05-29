@@ -22,7 +22,7 @@ Crate an algorithm for the robotic arm so it can sort properly the cans and bott
 ## Config of this project
 * A submodule is used the repository [vision_](https://github.com/mora200217/vision_) if you want to clone this repository use the command ```git clone --recurse-submodules https://github.com/jsduenass/virtual_manipulator```
 * add the folders ```data``` and ```functions``` to the matlab path.
-* if you need to change the ROS ip address run the following command so git ignores the changes```git update-index --skip-worktree data/ROS_ip.txt```
+* if you need to change the ROS ip address run the following command so git ignores the changes```git update-index --skip-worktree data/ROS_ip.txt```. If you need to update the submodule ```git submodule update --remote --merge```
 
 
 ## About the virtual machine

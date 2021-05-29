@@ -1,6 +1,6 @@
 function [q,qd,qdd,traj_times] = compute_trajectory(current_joints_Config, final_pose, robot, endEffector, traj_duration)
         time_step = 0.1;
-        ws_height = 0.1;
+        ws_height = 0.4;      %save height 
         ik = inverseKinematics('RigidBodyTree',robot);
         ik.SolverParameters.AllowRandomRestart = false;
         weights = [1 1 1 1 1 1];
